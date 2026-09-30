@@ -115,6 +115,9 @@
         .q-image { max-width: 100%; border-radius: 8px; margin: 8px 0 16px 0; }
         .error-detail .q-image { max-width: 200px; margin: 4px 0; }
 </style>
+<meta property="og:title" content="Тесты 2026: огневая, служебная подготовка и МПП">
+<meta property="og:description" content="Билеты для подготовки: огневая подготовка — 5 билетов по 20 вопросов; служебная подготовка — 5 билетов по 20 вопросов; МПП — 3 билета по 20 вопросов.">
+<meta property="og:type" content="website">
 </head>
 <body>
     <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙</button>
@@ -161,9 +164,10 @@
 
     <div id="screen-results" class="screen">
         <header><h1>Результаты</h1></header>
-        <div class="card" id="results-content"></div>
-        <div id="error-review"></div>
-        <button class="btn btn-primary" id="retry-btn" onclick="retryErrors()">Повторить ошибочные вопросы</button>
+        <div id="result-banner" class="result-banner"></div>
+        <div class="card" id="result-stats"></div>
+        <div id="error-list"></div>
+        <button class="btn btn-primary" id="retry-errors-btn" onclick="retryErrors()">Повторить ошибочные вопросы</button>
         <button class="btn btn-primary" onclick="retryAll()">Пройти заново</button>
         <button class="btn btn-exit" onclick="goHome()">На главную</button>
     </div>
