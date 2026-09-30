@@ -112,6 +112,8 @@
         .theme-toggle { position: fixed; top: 8px; right: 8px; z-index: 100; }
         .warning-box { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning); border-radius: 8px; padding: 10px; text-align: center; margin-top: 8px; font-weight: 600; }
         .warning { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning); border-radius: 8px; padding: 10px; text-align: center; margin-top: 8px; margin-bottom: 20px; font-weight: 600; }
+        #fail-message { background: var(--error-bg); color: var(--error); border: 1px solid var(--error); border-radius: 8px; padding: 10px; text-align: center; margin-top: 8px; margin-bottom: 20px; font-weight: 600; font-size: 1.1rem; }
+        .hidden { display: none !important; }
 
     
         .q-image { max-width: 100%; border-radius: 8px; margin: 8px 0 16px 0; }
@@ -153,7 +155,8 @@
             <div class="q-counter" id="q-counter"></div>
             <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
             <div class="error-count" id="error-count"></div>
-            <div id="warning" style="display:none;" class="warning">Внимание: допущено 4 ошибки. Ещё одна — и тест не сдан!</div>
+            <div id="warning" class="warning hidden">Внимание: допущено 4 ошибки. Ещё одна — и тест не сдан!</div>
+            <div id="fail-message" class="hidden">✗ Тест не сдан</div>
             <div class="question">
                 <div id="q-text" class="q-text"></div>
                 <img id="q-image" class="q-image" style="display:none; max-width:100%; margin:10px 0;">
@@ -254,7 +257,8 @@
     function loadQuestion() {
         const questions = getQuestions();
         const q = questions[state.qIdx];
-        document.getElementById('q-counter').textContent = 'Вопрос ' + (state.qIdx + 1) + ' из ' + questions.length;
+        const ticketName = state.section === 'fire2026' ? 'Огневая подготовка 2026' : state.section === 'service2026' ? 'Служебная подготовка 2026' : 'МПП 2026';
+        document.getElementById('q-counter').innerHTML = ticketName + ' · Билет ' + (state.ticketIdx + 1) + '<br><small>Вопрос ' + (state.qIdx + 1) + ' из ' + questions.length + '</small>';
         const pct = (state.qIdx / questions.length) * 100;
         document.getElementById('progress-fill').style.width = pct + '%';
         
@@ -279,7 +283,17 @@
         document.getElementById('next-btn').style.display = 'none';
         
         const warnEl = document.getElementById('warning');
-        warnEl.style.display = (state.errors >= 4) ? 'block' : 'none';
+        const failEl = document.getElementById('fail-message');
+        if (state.errors >= 5) {
+            warnEl.classList.add('hidden');
+            failEl.classList.remove('hidden');
+        } else if (state.errors === 4) {
+            warnEl.classList.remove('hidden');
+            failEl.classList.add('hidden');
+        } else {
+            warnEl.classList.add('hidden');
+            failEl.classList.add('hidden');
+        }
     }
 
     function selectAnswer(selectedIdx, correctIdx, btnEl) {
@@ -304,8 +318,12 @@
             const errEl = document.getElementById('error-count');
             errEl.textContent = 'Ошибок: ' + state.errors + ' (допустимо не более 4)';
             errEl.className = 'error-count' + (state.errors >= 4 ? ' danger' : '');
-            if (state.errors >= 4) {
-                document.getElementById('warning').style.display = 'block';
+            if (state.errors >= 5) {
+                document.getElementById('warning').classList.add('hidden');
+                document.getElementById('fail-message').classList.remove('hidden');
+            } else if (state.errors === 4) {
+                document.getElementById('warning').classList.remove('hidden');
+                document.getElementById('fail-message').classList.add('hidden');
             }
         }
         
